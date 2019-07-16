@@ -20,3 +20,11 @@ incoming=1
 sudo /opt/zimbra/postfix/sbin/postsuper -d ALL
 
 #######################################################################################################################################
+# For deleting e-mails from a specific sender, we will launch mailq, grep for the domain or sender’s address
+
+/opt/zimbra/postfix/sbin/mailq | tail -n +2 | \
+grep -v ‘^ *(‘ | awk ‘BEGIN { RS = “” } { if ($8 ~ /@domain.com/) print $1 }’ | tr -d ‘*!’ | \ /opt/zimbra/postfix/sbin/postsuper -d –
+
+#For deleting all e-mails from the queue:
+
+/opt/zimbra/postfix/sbin/postsuper -d ALL
