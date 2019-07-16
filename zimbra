@@ -1,1 +1,22 @@
 https://www.itsupportwale.com/blog/how-to-install-open-source-zimbra-mail-server-zcs-8-8-12-on-ubuntu-16-04-lts/
+########################################################################################################################################
+#How to check logs of Zimbra mail server.
+
+tail -f /opt/zimbra/
+
+########################################################################################################################################
+# Check the Deferred Messages fo Zimbra Mail server.
+
+[zimbra@mailsvr ~]$  sudo ~/libexec/zmqstat
+hold=0
+corrupt=0
+deferred=64360
+active=19999
+incoming=1
+
+########################################################################################################################################
+
+# How to delete the messages
+sudo /opt/zimbra/postfix/sbin/postsuper -d ALL
+
+#######################################################################################################################################
