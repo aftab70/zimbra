@@ -1,0 +1,106 @@
+How to add DKIM record on zimbra 8.7
+Postby rah1m » Tue Oct 04, 2016 3:54 pm
+
+Step 1. Modify DKIM generator
+
+a. Edit (as root) script file /opt/zimbra/libexec/zmdkimkeyutil and replace all '2048' occurrences with '1024'.
+This will allow creation of DKIM key with length 1024 and set it as default value. 
+
+nano /opt/zimbra/libexec/zmdkimkeyutil
+
+replace all 3 '2048' occurrences with '1024' and then save and exit
+
+Step 2. generate a new DKIM, replace example.com with your domain. Please note you'll need to generate a DKIM for each domain
+
+switch to zimbra user : su - zimbra
+
+/opt/zimbra/libexec/zmdkimkeyutil -a -d example.com
+
+
+Step 3. Retrieving the stored DKIM data for your domain - replace example.com with your domain
+as zimbra user run command below;
+
+/opt/zimbra/libexec/zmdkimkeyutil -q -d example.com
+
+
+zimbra@example.com:~$ /opt/zimbra/libexec/zmdkimkeyutil -a -d example.com
+DKIM Data added to LDAP for domain example.com with selector 0E9F184A-9577-11E1-AD0E-2A2FBBAC6BCB
+Public key to enter into DNS:
+0E9F184A-9577-11E1-AD0E-2A2FBBAC6BCB._domainkey IN TXT "v=DKIM1;=rsa;
+p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDY5CBg15nZ2vYnRmrNub6Jn6ghQ2DXQbQgOJ/E5IGziUYEuE2OnxkBm1h3jived21uHjpNy0naOZjLj0xLyyjclVy1chrhSbsGAhe8HLXUsdXyfRvNTq8NWLsUnMEsoomtJCJ
+/6LYWYU1whOQ9oKZVAwWHSovAWZpByqNMZmFg7QIDAQAB" ; ----- DKIM 0E9F184A-9577-11E1-AD0E-2A2FBBAC6BCB for example.com
+
+
+Step 4. 
+highlight and copy: 0E9F184A-9577-11E1-AD0E-2A2FBBAC6BCB._domainkey
+
+highlight and copy: v=DKIM1; k=rsa;
+
+highlight and copy: p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDY5CBg15nZ2vYnRmrNub6Jn6ghQ2DXQbQgOJ/E5IGziUYEuE2OnxkBm1h3jived21uHjpNy0naOZjLj0xLyyjclVy1chrhSbsGAhe8HLXUsdXyfRvNTq8NWLsUnMEsoomtJCJ
+
+Step 5. verify DKIM key using this link http://dkimcore.org/tools/keycheck.html
+
+
+Step 6. 
+
+- login to your DNS web portal
+- create new TXT entry
+
+- add the 0E9F184A-9577-11E1-AD0E-2A2FBBAC6BCB._domainkey in the hostname field
+
+- add the public DKIM key into destination / target field 
+v=DKIM1; k=rsa; P=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDY5CBg15nZ2vYnRmrNub6Jn6ghQ2DXQbQgOJ/E5IGziUYEuE2OnxkBm1h3jived21uHjpNy0naOZjLj0xLyyjclVy1chrhSbsGAhe8HLXUsdXyfRvNTq8NWLsUnMEsoomtJCJ
+
+
+bits and pieces taken from this topic viewtopic.php?t=60493
+
+Top
+davidkillingsworth
+Advanced member
+Advanced member
+Posts: 189
+Joined: Sat Sep 13, 2014 2:26 am
+ZCS/ZD Version: Release 8.8.12.GA.3794.UBUNTU14.64
+Re: How to add DKIM record on zimbra 8.7
+Postby davidkillingsworth » Wed Jun 21, 2017 3:30 pm
+
+Editing a core Zimbra file doesn't sound like a good idea and you will probably lose the change when you next upgrade to the latest version.
+
+Don't edit this as suggested above.
+Code: Select all
+
+/opt/zimbra/libexec/zmdkimkeyutil
+
+
+
+Please look at the bug report. Specifically comments 8, 9, and 11.
+https://bugzilla.zimbra.com/show_bug.cgi?id=106785
+
+The output of the key when running the /opt/zimbra/libexec/zmdkimkeyutil command is 2048 instead of 1024, so it is longer and broken into 2 line of text for the p= string.
+
+Just fuse those two different lines together without the quote and past into your DNS record. It will be longer, but it does work with hosted DNS. I just added one to godaddy without problem.
+
+Reply to this thread if it doesn't make sense and I will reply with an example.
+Top
+harun
+Posts: 2
+Joined: Mon Jun 26, 2017 10:19 am
+Re: How to add DKIM record on zimbra 8.7
+Postby harun » Sat Jul 01, 2017 9:36 am
+
+from the KB 21682 its allowed to replace 2048 key to 1024 
+
+https://wiki.zimbra.com/wiki/Best_Pract ... _and_DMARC
+the article stated:
+
+Known issue on ZCS 8.7.x
+On ZCS 8.7 and 8.7.1 DKIM have a known issue: Bug 106785 - zmdkimkeyutil is generating a non valid and long DKIM in 8.7
+
+As a workaround you can:
+
+Edit (as root) script file /opt/zimbra/libexec/zmdkimkeyutil and replace all '2048' occurences with '1024'. This will allow creation of DKIM key with length 1024 and set it as default value.
+Run /opt/zimbra/libexec/zmdkimkeyutil -u -d yourdomain.com
+Update your DNS records.
+After changes in the script you still can create 2048 bit keys, using option -b:
+
+/opt/zimbra/libexec/zmdkimkeyutil -u -b 2048 -d yourdomain.com
