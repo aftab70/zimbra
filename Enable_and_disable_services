@@ -1,0 +1,75 @@
+zimbra@smtp ~]$ zmprov ms `zmhostname` -zimbraServiceEnabled dnscache
+
+zmprov ms `zmhostname` -zimbraServiceEnabled dnscache
+
+After disableing , please zmcontrol status
+[zimbra@smtp ~]$ zmcontrol status
+Host smtp.abc.com
+        amavis                  Running
+        antispam                Running
+        antivirus               Running
+        ldap                    Running
+        logger                  Running
+        mailbox                 Running
+        memcached               Running
+        mta                     Running
+        opendkim                Running
+        proxy                   Running
+        service webapp          Running
+        snmp                    Running
+        spell                   Running
+        stats                   Running
+        zimbra webapp           Running
+        zimbraAdmin webapp      Running
+        zimlet webapp           Running
+        zmconfigd               Running
+
+
+
+https://wiki.zimbra.com/wiki/New_Features_ZCS_8.5
+https://forums.zimbra.org/viewtopic.php?t=60978
+https://wiki.zimbra.com/wiki/DNS_caching_service_(dnscache)
+
+In Zimbra Mail Server you can disabel and enable service from CLI as per your requirement . Below are the steps:
+
+Check Service Status
+$ zmcontrol status
+Host mail.example.com
+        amavis                    Running
+        antivirus                 Running
+        antispam                  Running
+        ldap                      Running
+        logger                    Running
+        mailbox                   Running
+        memcached                 Running
+        mta                       Running
+        opendkim                  Running
+        proxy                     Running
+        service webapp            Running
+        snmp                      Running
+        spell                     Running
+        stats                     Running
+        zimbra webapp             Running
+        zimbraAdmin webapp       Running
+        zimlet webapp            Running
+        zmconfigd                Running
+
+Disable antispam service
+# su - zimbra
+Syntax:
+command option "zimbra_hostname" attribute service_name
+Example:
+$ zmprov ms "mail.example.com" -zimbraServiceEnabled antispam
+or,
+$ zmprov ms `zmhostname` -zimbraServiceEnabled antispam
+
+Enable antispam service
+$ zmprov ms "mail.example.com" +zimbraServiceEnabled antispam
+or,
+$ zmprov ms `zmhostname` +zimbraServiceEnabled antispam
+
+Disable Antivirus service
+$ zmprov ms `zmhostname` -zimbraServiceEnabled antivirus
+
+Enable Antivirus service
+$ zmprov ms `zmhostname` +zimbraServiceEnabled antivirus
