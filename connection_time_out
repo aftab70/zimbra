@@ -1,0 +1,19 @@
+Solution 1
+Open the sysctl.conf file using this command:
+# vi /etc/sysctl.conf
+
+Look for the "tcp_window_scaling=1" parameter and set its value to "0".
+Type in ":wq!".
+ 
+Do not include the quotation marks.
+Reboot the box by executing:
+#reboot
+
+If you use postfix running on Linux and if you try to telnet the above host on port 25, the connection is made, but the remote mail server does not send its 220 messages upon connection.
+
+The following option will revert back once your reboot the system:
+
+Run the following commands:
+
+# echo 0 > /proc/sys/net/ipv4/tcp_window_scaling
+# sysctl -p
