@@ -1,0 +1,40 @@
+#  for outlook configuration
+
+Your Name - User_name
+E-mail Address - somebody@yourdomain.com
+--------------------------------------------------------------------
+
+Account Type - POP3
+incomming email server - FQDN
+out going email server - FQDN
+
+-------------------------------------------------------------------
+Login information
+
+user name - somebody@ypurdomain.com
+Password - PASSWORD 
+
+----------------------------------------------------------------------
+
+More Setting
+
+out going server 
+check marked - My out going server (SMTP) requires authendication
+
+Advanced - In comming server POP3 - 995
+check marked - This server requires an encrypted connection (SSL)
+
+Out going server (SMTP) - 465 
+
+use the following type of enccrytpted connection - SSL
+
+
+----------------------------------------------------------------------
+
+
+----------------------------Author Name -----------------------------
+-----------------------Aftab Ali--Linux Admin------------------------
+--------------------------aftab70@ymail.com--------------------------
+
+
+
